@@ -4,10 +4,12 @@ import re
 import nltk
 from nltk.classify.scikitlearn import SklearnClassifier
 from sklearn.svm import LinearSVC
+import os       
+import pickle as pk
 pattern='\[(.*?)\]'
 
       
-#Functions to extract features
+#Start: Functions to extract features
 def num_nt(review):
     val=0
     for word in review:
@@ -73,10 +75,11 @@ def isassent(review):
         if word in assent:
             val+=1
     return 'isassent',val
-
+#End: Functions to extract features
 
 #Load the training/heldout file and extract the text
 def load_text_from_file(filename):
+    '''Parses the file to extract reviews from them'''
     products=[]
     scores=[]
     reviews=[]
@@ -100,9 +103,9 @@ def load_text_from_file(filename):
                         l=-1
                     else:
                         l=0
+                    review_score.append(l)
                 except ValueError:
-                    l=0
-                review_score.append(l)
+                    l=0    
             mean_score=0
             if len(review_score)!=0:
                 mean_score=sum(review_score)/len(review_score)
@@ -120,13 +123,15 @@ def load_text_from_file(filename):
     return products,scores,reviews
     
 #Feature Extraction
-def extract_features(reviews):
+def extract_features(reviews,scores=[],mode='train'):
+    '''Extracts features from the reviews'''
     train_set=[]
     i=0
     #Extract features for each review
     for review in reviews:
         features={}
-        review=review.split()
+        if mode=='train':
+            review=review.split()
         key,val=num_nt(review)
         features[key]=val
         key,val=num_ques(review)
@@ -141,29 +146,110 @@ def extract_features(reviews):
         features[key]=val
         key,val=iscertainty(review)
         features[key]=val
-        train_set.append((features,scores[i]))
+        if mode=='train':
+            train_set.append((features,scores[i]))
+        else:
+            train_set.append(features)
         i+=1
+    
     return train_set
             
-if __name__=='__main__':
-    trainfile='trainingfile.txt'
-    heldout='heldoutfile.txt'
+            
+def load_test(filename):
+    linenos=[]
+    reviews=[]
+    with open(filename,'r') as test:
+        for line in test:
+            line=line.replace('##','')
+            line=line.rstrip('\r\n').split('\t')
+            linenos.append(line[0])
+            reviews.append(line[1])
+    
+    test.close()
+    return linenos,reviews
+
+
+def train_classifier(trainfile):
+    '''Training the classifier '''
     products,scores,reviews=load_text_from_file(trainfile)
-    train_set=extract_features(reviews)
-    #Training the classifier. 
+    train_set=extract_features(reviews,scores)
     clf=SklearnClassifier(LinearSVC())
-    trainlen=int(len(train_set)*0.9)
-    #model=clf.train(train_set[:trainlen])
-    model=nltk.NaiveBayesClassifier.train(train_set)
-    #Testing the model on the heldout file
+    #trainlen=int(len(train_set)*0.9)
+    model=clf.train(train_set)
+    #model=nltk.NaiveBayesClassifier.train(train_set)
+    pk.dump(model,open('classifier.p','wb'))
+    print 'Accuracy for the training set: ',nltk.classify.accuracy(model,train_set)
+    #print model.show_most_informative_features(5)
+    
+def evaluate_clf(heldout):
+    '''Testing the model on the heldout file'''
     products,scores,reviews=load_text_from_file(heldout)
-    heldout_set=extract_features(reviews)
-    print nltk.classify.accuracy(model,heldout_set)
-    print model.show_most_informative_features(5)
+    heldout_set=extract_features(reviews,scores)
+    model=pk.load(open('classifier.p','rb'))
+    print 'Accuracy for the heldout set: ',nltk.classify.accuracy(model,heldout_set)
+    #print model.show_most_informative_features(5)
+    
+    
+def classify_reviews(testfolder):
+    '''Classifying the actual test data'''
+    model=pk.load(open('classifier.p','rb'))
+    outputf=open('g_4_output.txt','w+')
+    for testfile in os.listdir(testfolder):
+        testpath=os.path.join(testfolder,testfile)
+        test_reviews,linenos=load_test(testpath)
+        test_set=extract_features(test_reviews,mode='test')
+        i=0
+        for each_res in test_set:
+            result=model.classify(each_res)
+            outputf.write(str(testfile)+'\t'+str(i)+'\t'+str(result)+'\n')
+            i+=1
+    outputf.close()
+    
+   
+if __name__=='__main__':
+    trainfile='trainingfile.txt' #Name of the training file
+    heldout='heldoutfile.txt' #Name of the heldout file
+    testfolder='../testset' #Folder which contains the test sets
+    #train_classifier(trainfile) #function that trains the model
+    #evaluate_clf(heldout) #function that evaluates the mdoel on the heldout set
+    classify_reviews(testfolder) #function that loads the model and classifies
 
 '''
+Write-up:
+(i) Some of the features that I decided to work on were: 
+    a. Function: num_nt()
+    Number of words ending in "n't". Eg: isn't, doesn't, hasn't etc. This is because from my eyeballing of the training file, I found this recurring pattern in negative reviews.
+    b. Function: num_ques()
+    How many question marks in the reviews? Same reason for choice as above.
+    c. Function: is_insight()
+    Does the review contain words that are 'insight'? (Cheng et.al)
+    d. Function: is_tentative()
+    Does the review contain words that are 'tentative'? (Cheng et.al)
+    e. Function: is_certainty()
+    Does the review contain words that are 'certainty'? (Cheng et.al)
+    f. Function: is_inhibition()
+    Does the review contain words that are 'inhibition'? (Cheng et.al)
+    g. Function: is_assent()
+    Does the review contain words that are 'assent'? (Cheng et.al)
+    
+(ii) As a group, we decided to output our results for each of the feature extraction functions as a tuple of (feature_name,feature_value)
+
+(iii) In some of the feature functions such as 'isassent' and 'isinsight', since the feature I was trying to measure was a verb, I had to stem each of the words
+in the reviews to its root form.
+
+(iv)
+
 Output:
-Accuracy: 0.546242774566
+
+Accuracy for the training set:  0.501177578898
+Most Informative Features
+                num_ques = 1                  -1 : 0      =      4.5 : 1.0
+                    isnt = 2                  -1 : 0      =      3.4 : 1.0
+             istentative = 1                  -1 : 0      =      2.7 : 1.0
+                    isnt = 1                  -1 : 1      =      2.0 : 1.0
+             iscertainty = 1                   1 : 0      =      1.9 : 1.0
+
+Accuracy for the heldout set:  0.546242774566
 Most Informative Features
                 num_ques = 1                  -1 : 0      =      4.5 : 1.0
                     isnt = 2                  -1 : 0      =      3.4 : 1.0
@@ -172,3 +258,4 @@ Most Informative Features
              iscertainty = 1                   1 : 0      =      1.9 : 1.0
 
 '''
+
