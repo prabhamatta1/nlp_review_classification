@@ -210,8 +210,8 @@ if __name__=='__main__':
     trainfile='trainingfile.txt' #Name of the training file
     heldout='heldoutfile.txt' #Name of the heldout file
     testfolder='../testset' #Folder which contains the test sets
-    #train_classifier(trainfile) #function that trains the model
-    #evaluate_clf(heldout) #function that evaluates the mdoel on the heldout set
+    train_classifier(trainfile) #function that trains the model
+    evaluate_clf(heldout) #function that evaluates the mdoel on the heldout set
     classify_reviews(testfolder) #function that loads the model and classifies
 
 '''
@@ -241,21 +241,21 @@ in the reviews to its root form.
 
 Output:
 
-Accuracy for the training set:  0.501177578898
+Accuracy for the training set:  0.629298162977
 Most Informative Features
-                num_ques = 1                  -1 : 0      =      4.5 : 1.0
-                    isnt = 2                  -1 : 0      =      3.4 : 1.0
-             istentative = 1                  -1 : 0      =      2.7 : 1.0
-                    isnt = 1                  -1 : 1      =      2.0 : 1.0
-             iscertainty = 1                   1 : 0      =      1.9 : 1.0
+                num_ques = 3                   0 : -1     =      4.9 : 1.0
+             istentative = 1                   0 : 1      =      3.5 : 1.0
+                    isnt = 2                  -1 : 1      =      2.3 : 1.0
+                num_ques = 1                  -1 : 1      =      2.2 : 1.0
+                    isnt = 1                  -1 : 1      =      1.9 : 1.0
 
-Accuracy for the heldout set:  0.546242774566
+Accuracy for the heldout set:  0.634682080925
 Most Informative Features
-                num_ques = 1                  -1 : 0      =      4.5 : 1.0
-                    isnt = 2                  -1 : 0      =      3.4 : 1.0
-             istentative = 1                  -1 : 0      =      2.7 : 1.0
-                    isnt = 1                  -1 : 1      =      2.0 : 1.0
-             iscertainty = 1                   1 : 0      =      1.9 : 1.0
+                num_ques = 3                   0 : -1     =      4.9 : 1.0
+             istentative = 1                   0 : 1      =      3.5 : 1.0
+                    isnt = 2                  -1 : 1      =      2.3 : 1.0
+                num_ques = 1                  -1 : 1      =      2.2 : 1.0
+                    isnt = 1                  -1 : 1      =      1.9 : 1.0
 
 '''
 
