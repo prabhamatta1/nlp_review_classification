@@ -2,7 +2,7 @@
 
 #dgreis feature extractor
 
-def extract_features_david(reviews,scores):
+def extract_features_david(reviews,scores,mode='train'):
     train_set=[]
     i=0
     articles = 'a an the'
@@ -17,13 +17,17 @@ def extract_features_david(reviews,scores):
     #Extract features for each review 
     biglist = [(articles,'articles'),(prosentwords,'prosentwords'),(pronouns,'pronouns'),(auxverbs,'auxverbs'),(conjs,'conjs'),(inters,'inters')]
     for review in reviews:
-    	features={}
-      	review=review.split()
-        for j in biglist:
-        	key,val=functionTyper_group(j[0],j[1],review)
-        	features[key]=val
+      features={}
+      if mode=='train':
+        review=review.split()
+      for j in biglist:
+    	  key,val=functionTyper_group(j[0],j[1],review)
+    	  features[key]=val
+      if mode=='train':
         train_set.append((features,scores[i]))
-        i+=1
+      else:
+        train_set.append(features)
+      i+=1
     return train_set
 
 def functionTyper_group(typeSet,typeName,line):

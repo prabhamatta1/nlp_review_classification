@@ -62,16 +62,17 @@ def load_review_from_file(fname):
 
 
 # get feature words (can only choose either to get stem or to get tag. if both, only get stem)
-def get_feature_words(reviews, get_all=False, get_stem=False, get_tag=False, flt_stop_words=True):
+def get_feature_words(reviews, scores, get_all=False, get_stem=False, get_tag=False, flt_stop_words=True):
   # get positive and negative review words
   pos_words = []
   neg_words = []
   neu_words = []
   all_words = []
 
+  i = 0
   for review in reviews:
-    score = review[1]
-    words = nltk.word_tokenize(review[2])
+    score = scores[i]
+    words = nltk.word_tokenize(review)
 
     if get_all:
       target_words = all_words
@@ -93,6 +94,8 @@ def get_feature_words(reviews, get_all=False, get_stem=False, get_tag=False, flt
     else:
       target_words.extend(words)
 
+    i += 1
+
   if flt_stop_words:
     stop_words = en_stop_words
   else:
@@ -108,23 +111,27 @@ def get_feature_words(reviews, get_all=False, get_stem=False, get_tag=False, flt
 
 
 # extract unigram feature
-def extract_unigram_feature(reviews, get_all=False, get_stem=False, get_tag=False, flt_stop_words=True):
+def extract_unigram_feature(reviews, scores, get_all=False, get_stem=False, get_tag=False, flt_stop_words=True, mode='train'):
   feature_set = []
 
   # get feature words from review texts
-  feature_words = get_feature_words(reviews, get_all, get_stem, get_tag, flt_stop_words)
+  feature_words = get_feature_words(reviews, scores, get_all, get_stem, get_tag, flt_stop_words)
 
   # get features
+  i = 0
   for review in reviews:
-    score = review[1]
-    text = review[2]
+    score = scores[i]
+    text = review
     features = {}
     word_list = nltk.word_tokenize(text)
     # contain the feature words or not
     for feature_word in feature_words:
       features['contains(%s)' % feature_word] = feature_word in word_list
-
-    feature_set.append((features, score))
+    if mode == 'train':
+      feature_set.append((features, score))
+    else:
+      feature_set.append(features)
+    i += 1
 
   return feature_set
 

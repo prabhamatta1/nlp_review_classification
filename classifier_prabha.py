@@ -178,34 +178,36 @@ def load_text_from_file(filename):
     return products,scores,reviews
     
 #Feature Extraction
-def extract_features(reviews):
+def extract_features(reviews, scores, mode='train'):
     train_set=[]
     i=0
     for review in reviews: #Extract features for each review
-        features={} 
-	key,val=has_negativeconjunctions(review)
-	features[key]=val	
-	key,val=num_negations(review)
-	features[key]=val
-	key,val=num_pos_emotions(review)
-	features[key]=val
-	key,val=num_positives(review)
-	features[key]=val
-	key,val=num_exclamationmarks(review)
-	features[key]=val
-	key,val=hasexclamationmarks(review)
-	features[key]=val
-	key,val=num_neg_emotions(review)
-	features[key]=val	
-	
-	key,val=num_anger_sadness(review)
-	features[key]=val
-	
-	key,val=has_pos_emotions(review)
-	features[key]=val	
-	      
+      features={} 
+      key,val=has_negativeconjunctions(review)
+      features[key]=val	
+      key,val=num_negations(review)
+      features[key]=val
+      key,val=num_pos_emotions(review)
+      features[key]=val
+      key,val=num_positives(review)
+      features[key]=val
+      key,val=num_exclamationmarks(review)
+      features[key]=val
+      key,val=hasexclamationmarks(review)
+      features[key]=val
+      key,val=num_neg_emotions(review)
+      features[key]=val	
+      key,val=num_anger_sadness(review)
+      features[key]=val
+      key,val=has_pos_emotions(review)
+      features[key]=val	
+      
+      if mode=='train':
         train_set.append((features,scores[i]))
-        i+=1
+      else:
+        train_set.append(features)
+      i+=1
+    
     return train_set
             
 if __name__=='__main__':
