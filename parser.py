@@ -55,7 +55,7 @@ def write_trainingfile(filenames):
             product_name = basename(product_file).split('.')[0]
             for line in fin:
                 try:
-                    attributes, review = line.strip('').split("##")
+                    attributes, review = line.strip().split("##")
                     attributes = attributes.strip()
                     if len(attributes) != 0:
                         output = "["+product_name+"]\t" + attributes +"\t"+ review +"\n"
