@@ -178,7 +178,7 @@ def load_text_from_file(filename):
     return products,scores,reviews
     
 #Feature Extraction
-def extract_features(reviews, scores, mode='train'):
+def extract_features(reviews, scores=[], mode='train'):
     train_set=[]
     i=0
     for review in reviews: #Extract features for each review

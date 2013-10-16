@@ -111,16 +111,14 @@ def get_feature_words(reviews, scores, get_all=False, get_stem=False, get_tag=Fa
 
 
 # extract unigram feature
-def extract_unigram_feature(reviews, scores, get_all=False, get_stem=False, get_tag=False, flt_stop_words=True, mode='train'):
+def extract_unigram_feature(reviews, feature_words, scores=[], get_all=False, get_stem=False, get_tag=False, flt_stop_words=True, mode='train'):
   feature_set = []
-
-  # get feature words from review texts
-  feature_words = get_feature_words(reviews, scores, get_all, get_stem, get_tag, flt_stop_words)
 
   # get features
   i = 0
   for review in reviews:
-    score = scores[i]
+    if mode=="train":
+      score = scores[i]
     text = review
     features = {}
     word_list = nltk.word_tokenize(text)

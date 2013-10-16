@@ -2,7 +2,7 @@
 
 #dgreis feature extractor
 
-def extract_features_david(reviews,scores,mode='train'):
+def extract_features_david(reviews,scores=[],mode='train'):
     train_set=[]
     i=0
     articles = 'a an the'

@@ -12,6 +12,9 @@ import classifier_prabha
 import classifier_jt
 import extract_features_david
 
+# gloabl variable for feature words of unigram model
+feature_words = []
+
       
 #Start: Functions to extract features
 def num_nt(review):
@@ -172,17 +175,23 @@ def load_test(filename):
     test.close()
     return linenos,reviews
 
-def combine_sets(set1, set2, set3, set4):
+def combine_sets(set1, set2, set3, set4, mode='train'):
   final_set = []
-  for i in range(len(set1)):
-    dict1 = set1[i][0]
-    dict2 = set2[i][0]
-    dict3 = set3[i][0]
-    dict4 = set4[i][0]
-    score = set1[i][1]
-
-    final_set.append((dict(dict1.items() + dict2.items()), score))
-    i += 1
+  if mode=="train":
+    for i in range(len(set1)):
+      dict1 = set1[i][0]
+      dict2 = set2[i][0]
+      dict3 = set3[i][0]
+      dict4 = set4[i][0]
+      score = set1[i][1]
+      final_set.append((dict(dict1.items() + dict2.items() + dict3.items() + dict4.items()), score))
+  else:
+    for i in range(len(set1)):
+      dict1 = set1[i]
+      dict2 = set2[i]
+      dict3 = set3[i]
+      dict4 = set4[i]
+      final_set.append(dict(dict1.items() + dict2.items() + dict3.items() + dict4.items()))
 
   return final_set
 
@@ -195,7 +204,9 @@ def train_classifier(trainfile):
     train_set_pi=extract_features(reviews,scores)
     train_set_prabha=classifier_prabha.extract_features(reviews,scores)
     train_set_david=extract_features_david.extract_features_david(reviews,scores)
-    train_set_jt=classifier_jt.extract_unigram_feature(reviews,scores)
+    # get feature words from review texts
+    feature_words = classifier_jt.get_feature_words(reviews, scores)
+    train_set_jt=classifier_jt.extract_unigram_feature(reviews,feature_words,scores)
 
     train_set = combine_sets(train_set_pi, train_set_prabha, train_set_david, train_set_jt)
 
@@ -214,7 +225,7 @@ def evaluate_clf(heldout):
     heldout_set_pi=extract_features(reviews,scores)
     heldout_set_prabha=classifier_prabha.extract_features(reviews,scores)
     heldout_set_david=extract_features_david.extract_features_david(reviews,scores)
-    heldout_set_jt=classifier_jt.extract_unigram_feature(reviews,scores)
+    heldout_set_jt=classifier_jt.extract_unigram_feature(reviews,feature_words,scores)
 
     heldout_set = combine_sets(heldout_set_pi, heldout_set_prabha, heldout_set_david, heldout_set_jt)
     model=pk.load(open('classifier.p','rb'))
@@ -231,12 +242,20 @@ def classify_reviews(testfolder):
         if testfile.startswith('.'):
           continue
         testpath=os.path.join(testfolder,testfile)
-        test_reviews,linenos=load_test(testpath)
-        test_set=extract_features(test_reviews,mode='test')
+        linenos,test_reviews=load_test(testpath)
+        test_set_pi=extract_features(test_reviews,mode='test')
+        test_set_prabha=classifier_prabha.extract_features(test_reviews,mode='test')
+        test_set_david=extract_features_david.extract_features_david(test_reviews,mode='test')
+        test_set_jt=classifier_jt.extract_unigram_feature(test_reviews,feature_words,mode='test')
+        test_set = combine_sets(test_set_pi, test_set_prabha, test_set_david, test_set_jt, mode='test')
         i=0
         for each_res in test_set:
-            result=model.classify(each_res)
-            outputf.write(str(testfile)+'\t'+str(i)+'\t'+str(result)+'\n')
+            # TODO: [t] as netural
+            if test_reviews[i].startswith('[t]'):
+              outputf.write(str(testfile)+'\t'+str(i+1)+'\t0\n')
+            else:
+              result=model.classify(each_res)
+              outputf.write(str(testfile)+'\t'+str(i+1)+'\t'+str(result)+'\n')
             i+=1
     outputf.close()
     
