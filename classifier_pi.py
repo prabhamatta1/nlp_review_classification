@@ -204,7 +204,7 @@ def train_classifier(trainfile):
     #model=clf.train(train_set)
     model=nltk.NaiveBayesClassifier.train(train_set)
     pk.dump(model,open('classifier.p','wb'))
-    print 'Accuracy for the training set: ',nltk.classify.accuracy(model,train_set)
+    #print 'Accuracy for the training set: ',nltk.classify.accuracy(model,train_set)
     print model.show_most_informative_features(5)
     
 def evaluate_clf(heldout):
@@ -225,7 +225,7 @@ def evaluate_clf(heldout):
 def classify_reviews(testfolder):
     '''Classifying the actual test data'''
     model=pk.load(open('classifier.p','rb'))
-    outputf=open('g_4_output.txt','w+')
+    outputf=open('g4_output.txt','w+')
     for testfile in os.listdir(testfolder):
         # skip the file like '.DS_store' in Mac OS
         if testfile.startswith('.'):
@@ -244,9 +244,11 @@ def classify_reviews(testfolder):
 if __name__=='__main__':
     trainfile='trainingfile.txt' #Name of the training file
     heldout='heldoutfile.txt' #Name of the heldout file
-    testfolder='../testset' #Folder which contains the test sets
+    print "training classifier..."
+    testfolder='./testset' #Folder which contains the test sets
     train_classifier(trainfile) #function that trains the model
-    evaluate_clf(heldout) #function that evaluates the mdoel on the heldout set
+    print "classifying reviews...."
+    #evaluate_clf(heldout) #function that evaluates the mdoel on the heldout set
     classify_reviews(testfolder) #function that loads the model and classifies
 
 '''

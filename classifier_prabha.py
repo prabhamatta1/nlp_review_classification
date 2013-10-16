@@ -226,10 +226,10 @@ if __name__=='__main__':
     products,scores,reviews=load_text_from_file(heldout)
     heldout_set=extract_features(reviews)
     et = time.time()
-    print "Time taken for classifier to run in seconds: ", et-st
-    print "Naive Bayes Accuracy: ",nltk.classify.accuracy(model,heldout_set)
-    print "SVM Accuracy: ",nltk.classify.accuracy(svm_model,heldout_set)    
-    print model.show_most_informative_features(6)    
+    #print "Time taken for classifier to run in seconds: ", et-st
+    #print "Naive Bayes Accuracy: ",nltk.classify.accuracy(model,heldout_set)
+    #print "SVM Accuracy: ",nltk.classify.accuracy(svm_model,heldout_set)    
+    #print model.show_most_informative_features(6)    
     #print model.show_most_informative_features(5)
     
 """''

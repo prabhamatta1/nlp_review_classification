@@ -1,0 +1,12 @@
+testfile.txt	0	1
+testfile.txt	1	1
+testfile.txt	2	1
+testfile.txt	3	1
+testfile.txt	4	1
+testfile.txt	5	1
+testfile.txt	6	1
+testfile.txt	7	1
+testfile.txt	8	1
+testfile.txt	9	1
+testfile.txt	10	1
+testfile.txt	11	1
