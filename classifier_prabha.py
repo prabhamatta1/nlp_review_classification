@@ -76,7 +76,7 @@ def num_negations(review):
 
 
 def has_pos_emotions(review):
-    pos_emotions=set(['love', 'nice', 'sweet', 'awesome', 'enjoy', 'enjoyed'])
+    pos_emotions=set(['love', 'nice', 'sweet', 'awesome', 'enjoy', 'enjoyed', 'delighted', 'elegant'])
     num = 0
     text = review.translate(None, string.punctuation) #clean punctuations from review
     num = len(set(text.split()).intersection(pos_emotions))
@@ -102,7 +102,7 @@ def num_positives(review):
     return 'num_positives',num
 
 def num_neg_emotions(review):
-    neg_emotions=set(['hurt', 'ugly','nasty'])
+    neg_emotions=set(['hurt', 'ugly','nasty', 'disappointment', 'disappointed', 'disheartening', 'disgrace', 'dismay', 'dislike', 'dissatisfied', 'embarrassed'])
     num = 0
     text = review.translate(None, string.punctuation) #clean punctuations from review
     num = len(set(text.split()).intersection(neg_emotions))

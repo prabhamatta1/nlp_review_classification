@@ -1,4 +1,4 @@
-__author__ = "Priya Iyer"
+__author__ = "G4"
 
 import re
 import nltk
@@ -216,7 +216,7 @@ def train_classifier(trainfile):
     model=nltk.NaiveBayesClassifier.train(train_set)
     pk.dump(model,open('classifier.p','wb'))
     #print 'Accuracy for the training set: ',nltk.classify.accuracy(model,train_set)
-    print model.show_most_informative_features(5)
+    #print model.show_most_informative_features(5)
     
 def evaluate_clf(heldout):
     '''Testing the model on the heldout file'''
@@ -264,54 +264,9 @@ if __name__=='__main__':
     trainfile='trainingfile.txt' #Name of the training file
     heldout='heldoutfile.txt' #Name of the heldout file
     print "training classifier..."
-    testfolder='./testset' #Folder which contains the test sets
     train_classifier(trainfile) #function that trains the model
+    
+    testfolder='./testset' #Folder which contains the test sets
     print "classifying reviews...."
     #evaluate_clf(heldout) #function that evaluates the mdoel on the heldout set
     classify_reviews(testfolder) #function that loads the model and classifies
-
-'''
-Write-up:
-(i) Some of the features that I decided to work on were: 
-    a. Function: num_nt()
-    Number of words ending in "n't". Eg: isn't, doesn't, hasn't etc. This is because from my eyeballing of the training file, I found this recurring pattern in negative reviews.
-    b. Function: num_ques()
-    How many question marks in the reviews? Same reason for choice as above.
-    c. Function: is_insight()
-    Does the review contain words that are 'insight'? (Cheng et.al)
-    d. Function: is_tentative()
-    Does the review contain words that are 'tentative'? (Cheng et.al)
-    e. Function: is_certainty()
-    Does the review contain words that are 'certainty'? (Cheng et.al)
-    f. Function: is_inhibition()
-    Does the review contain words that are 'inhibition'? (Cheng et.al)
-    g. Function: is_assent()
-    Does the review contain words that are 'assent'? (Cheng et.al)
-    
-(ii) As a group, we decided to output our results for each of the feature extraction functions as a tuple of (feature_name,feature_value)
-
-(iii) In some of the feature functions such as 'isassent' and 'isinsight', since the feature I was trying to measure was a verb, I had to stem each of the words
-in the reviews to its root form.
-
-(iv)
-
-Output:
-
-Accuracy for the training set:  0.629298162977
-Most Informative Features
-                num_ques = 3                   0 : -1     =      4.9 : 1.0
-             istentative = 1                   0 : 1      =      3.5 : 1.0
-                    isnt = 2                  -1 : 1      =      2.3 : 1.0
-                num_ques = 1                  -1 : 1      =      2.2 : 1.0
-                    isnt = 1                  -1 : 1      =      1.9 : 1.0
-
-Accuracy for the heldout set:  0.634682080925
-Most Informative Features
-                num_ques = 3                   0 : -1     =      4.9 : 1.0
-             istentative = 1                   0 : 1      =      3.5 : 1.0
-                    isnt = 2                  -1 : 1      =      2.3 : 1.0
-                num_ques = 1                  -1 : 1      =      2.2 : 1.0
-                    isnt = 1                  -1 : 1      =      1.9 : 1.0
-
-'''
-
