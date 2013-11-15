@@ -1,8 +1,3 @@
-All the reviews were from amazon.com. They were used in the following 
-two papers:
-
-Minqing Hu and Bing Liu. "Mining and summarizing customer reviews". 
-   Proceedings of the ACM SIGKDD International Conference on 
    Knowledge Discovery & Data Mining (KDD-04), 2004.
 
 Minqing Hu and Bing Liu. "Mining Opinion Features in Customer 
