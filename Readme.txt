@@ -1,12 +1,3 @@
-*****************************************************************************
-* Annotated by: Minqing Hu and Bing Liu, 2004.
-*		Department of Computer Sicence
-*               University of Illinois at Chicago              
-*
-* Contact: Bing Liu, liub@cs.uic.edu 
-*          http://www.cs.uic.edu/~liub
-*****************************************************************************
-
                             Readme file
 
 This folder contains annotated customer reviews of 5 products. 
