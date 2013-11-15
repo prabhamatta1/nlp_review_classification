@@ -1,13 +1,3 @@
-                            Readme file
-
-This folder contains annotated customer reviews of 5 products. 
-
-	1. digital camera: Canon G3
-	2. digital camera: Nikon coolpix 4300
-	3. celluar phone:  Nokia 6610
-	4. mp3 player:     Creative Labs Nomad Jukebox Zen Xtra 40GB
-	5. dvd player:     Apex AD2600 Progressive-scan DVD player
-
 All the reviews were from amazon.com. They were used in the following 
 two papers:
 
